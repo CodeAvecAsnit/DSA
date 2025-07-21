@@ -1,5 +1,7 @@
 package BinaryTreeStructure;
 
+import LinkedQueue.LinkedList;
+import LinkedQueue.Node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -61,7 +63,7 @@ public class BinaryTree {
 
     public static List<Integer> breadthFirstSearch(BinaryNode rootNode){
         if(rootNode==null) return null;
-        Queue<BinaryNode> queue = new LinkedList<>();
+        Queue<BinaryNode> queue = (Queue<BinaryNode>) new LinkedList<BinaryNode>();
         List<Integer> list = new ArrayList<>();
         list.add(rootNode.value);
         queue.add(rootNode);
@@ -78,15 +80,31 @@ public class BinaryTree {
         return list;
     }
 
-    public BinaryNode sortedListToBST(LinkedList<Integer> head) {
+    public BinaryNode sortedArrayToBST(int[] nums) {
+        if(nums.length==0){return null;}
+        else {
+            return binaryInsert(nums,0,nums.length-1);
+        }
+    }
+
+    private BinaryNode binaryInsert(int[] nums,int start,int end ){
+        if(start>end) return null;
+        int mid = (start+end)/2;
+        BinaryNode root = new BinaryNode(nums[mid]);
+        root.right = binaryInsert(nums,mid+1,end);
+        root.left = binaryInsert(nums,start,mid-1);
+        return root;
+    }
+
+    public BinaryNode sortedListToBST(Node<Integer> head) {
         if (head == null) return null;
         return buildBST(head, null);
     }
 
-    private BinaryNode buildBST(LinkedList<Integer> head, LinkedList<Integer>tail) {
+    private BinaryNode buildBST(Node<Integer> head, Node<Integer>tail) {
         if (head == tail) return null;
-        LinkedList<Integer> slow = head;
-        LinkedList<Integer> fast = head;
+        Node<Integer> slow = head;
+        Node<Integer> fast = head;
         while (fast != tail && fast.next != tail) {
             fast = fast.next.next;
             slow = slow.next;
@@ -95,6 +113,30 @@ public class BinaryTree {
         root.left = buildBST(head, slow);
         root.right = buildBST(slow.next, tail);
         return root;
+    }
+
+    public int maxDepth(BinaryNode root) {
+        if(root == null) return 0;
+        if(root.right == null && root.left== null) return 1;
+        return 1+Math.max(maxDepth(root.right),maxDepth(root.left));
+    }
+
+    public boolean isSymmetric(BinaryNode root) {
+        if(root == null) return true;
+        if(root.right == null && root.left==null) return true;
+        return checkSymmetric(root.right,root.left);
+    }
+
+    private boolean checkSymmetric(BinaryNode leftNode, BinaryNode rightNode){
+        if((leftNode ==null & rightNode !=null )||(rightNode==null &&leftNode!=null)){
+            return false;
+        }
+        if(rightNode==null&&leftNode==null){
+            return true;
+        }
+        if(rightNode.value == leftNode.value){
+            return (checkSymmetric(leftNode.left,rightNode.right)&&checkSymmetric(leftNode.right,rightNode.left));
+        }else return false;
     }
 }
 
