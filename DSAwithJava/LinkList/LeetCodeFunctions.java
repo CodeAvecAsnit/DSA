@@ -76,4 +76,22 @@ public class LeetCodeFunctions {
         return prev;
     }
 
+    /**
+     * This problem is related with both tree and linked list
+     * @param head is the first node of the linked list inside binary tree
+     * @param root is the first node of the tree
+     * @return
+     */
+    public boolean isSubPath(ListNode head, TreeNode root) {
+        if(root==null) return false;
+        return check(root,head)|| isSubPath(head, root.left) || isSubPath(head, root.right);
+    }
+
+    boolean check(TreeNode root, ListNode head){
+        if(head==null) return true;
+        if(root==null) return false;
+        if(root.val!=head.val) return false;
+        return check(root.left,head.next)||check(root.right,head.next);
+    }
+
 }
